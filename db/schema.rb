@@ -10,10 +10,44 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_18_201807) do
+ActiveRecord::Schema.define(version: 2020_11_19_002405) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "magazines", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "oenologist_magazines", force: :cascade do |t|
+    t.bigint "oenologist_id", null: false
+    t.bigint "magazine_id", null: false
+    t.string "position"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["magazine_id"], name: "index_oenologist_magazines_on_magazine_id"
+    t.index ["oenologist_id"], name: "index_oenologist_magazines_on_oenologist_id"
+  end
+
+  create_table "oenologist_wines", force: :cascade do |t|
+    t.bigint "oenologist_id", null: false
+    t.bigint "wine_id", null: false
+    t.integer "grade"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["oenologist_id"], name: "index_oenologist_wines_on_oenologist_id"
+    t.index ["wine_id"], name: "index_oenologist_wines_on_wine_id"
+  end
+
+  create_table "oenologists", force: :cascade do |t|
+    t.string "name"
+    t.integer "age"
+    t.string "nationality"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "strains", force: :cascade do |t|
     t.string "name"
@@ -29,6 +63,7 @@ ActiveRecord::Schema.define(version: 2020_11_18_201807) do
     t.datetime "remember_created_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "admin"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -49,6 +84,10 @@ ActiveRecord::Schema.define(version: 2020_11_18_201807) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  add_foreign_key "oenologist_magazines", "magazines"
+  add_foreign_key "oenologist_magazines", "oenologists"
+  add_foreign_key "oenologist_wines", "oenologists"
+  add_foreign_key "oenologist_wines", "wines"
   add_foreign_key "wine_strains", "strains"
   add_foreign_key "wine_strains", "wines"
 end
