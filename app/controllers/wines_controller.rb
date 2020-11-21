@@ -31,6 +31,10 @@ class WinesController < ApplicationController
       if @wine.save
         wine_params[:strain_ids].reject(&:empty?).each_with_index do |id, index|
           WineStrain.create!(wine_id: @wine.id, strain_id: id, percentage: wine_params[:percentages][index])
+          oenologist_params[:magazine_ids].reject(&:empty?).each_with_index do |magazine_id, index|
+            magazine_list = oenologist_params[:positions].reject(&:empty?)
+            OenologistMagazine.create(oenologist_id: @oenologist.id, magazine_id: magazine_id, position:magazine_list[index])
+          end
         end
         format.html { redirect_to @wine, notice: 'Wine was successfully created.' }
         format.json { render :show, status: :created, location: @wine }
